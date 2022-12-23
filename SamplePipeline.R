@@ -52,9 +52,6 @@ load.web.file <- function(
 
 #### Download Data Files ----
 
-# file_clin <- data.makepath("ProstateCancer/EDRN/PublishedDataFiles/EDRN_ClinicalData.xlsx")
-# file_data <- data.makepath("ProstateCancer/EDRN/PublishedDataFiles/EDRN_MetabolomicsData.xlsx")
-
 # download metabolomics data from figshare
 # data files will be saved in the working directory
 file_data <- "EDRN_MetabolomicsData.xlsx"
