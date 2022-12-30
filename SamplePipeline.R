@@ -8,6 +8,7 @@ library(dplyr)
 library(magrittr)
 library(maplet)
 
+
 #### Define global parameters ----
 
 # max missingness for quotient normalization reference sample calculation
@@ -17,10 +18,11 @@ max_miss_filter <- 0.5
 # significance threshold
 alpha <- 0.05
 
+
 #### Define Helper Functions ----
 
 # Downloads files from the web and verifies their checksum. 
-# If file already exists in working directoyy, will use local copy.
+# If file already exists in working directory, will use local copy.
 load.web.file <- function(
     url, md5sum, outfile, zipfile = F) {
   # check if local file exists
@@ -50,6 +52,7 @@ load.web.file <- function(
   }
 }
 
+
 #### Download Data Files ----
 
 # download metabolomics data from figshare
@@ -70,6 +73,7 @@ load.web.file(
   outfile = file_clin
 )
 
+
 #### Lod Data ----
 
 D <- 
@@ -81,6 +85,7 @@ D <-
   mt_anno_xls(file=file_clin, sheet="ClinicalInfo", anno_type="samples", anno_id_col = "A1", data_id_col = "SAMPLE_ID") %>%
   # set variable to factor
   mt_anno_apply(anno_type = "samples", col_name = "Diagnosis", fun = as.factor)
+
 
 #### Preprocess Data ----
 
@@ -101,8 +106,8 @@ D %<>%
   mt_pre_trans_log() %>%
 
   # header for html report
-  mt_reporting_heading(heading = "Fisher's Missingness Analysis", lvl = 1) %>%
-  # fisher's test on missing metabolites vs Diagnosis
+  mt_reporting_heading(heading = "Fisher's Missingness Analysis, Diagnosis", lvl = 1) %>%
+  # Fisher's test on missing metabolites vs Diagnosis
   mt_stats_univ_missingness(in_col="Diagnosis", stat_name="missDiagnosis") %>%
   # correct test p-values for multiple tests
   mt_post_multtest(stat_name="missDiagnosis", method="BH") %>%
@@ -117,13 +122,15 @@ D %<>%
   mt_pre_filter_missingness(feat_max=max_miss_filter) %>%
   {.}
 
+
 #### Imputation ----
 
 D %<>%
   # header for html report
   mt_reporting_heading(heading="Global Statistics", lvl=1) %>% 
-  # knn-imputation
+  # knn-imputation, takes several minutes
   mt_pre_impute_knn() 
+
 
 #### Global Statistics ----
 
@@ -142,6 +149,7 @@ D %<>%
                    annotation_row = c("SUPER_PATHWAY"), 
                    show_colnames = F, show_rownames=F,
                    clustering_method = "ward.D2", cutree_rows = 5, cutree_cols = 5)
+
 
 #### Covariate Analysis ----
 
@@ -178,15 +186,19 @@ D %<>%
   # correct metabolites for Age using a linear model
   mt_pre_confounding_correction(formula = ~Age)
 
+
 #### Write Preprocessed Data and Annotations to File ----
   
 D %>% mt_write_se_xls(file="EDRN_MetabolomicsData_Preprocessed.xlsx",
                       sheet_names = c("PreprocessedData","MetaboliteAnnotations","ClinicalAnnotations"))
 
+
 #### Save html report ----
 
+# takes several minutes
 D %<>%
   mt_reporting_html(file = "EDRN_Preprocessing.html")
+
 
 #### Access data ----
 
