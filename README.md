@@ -6,4 +6,4 @@ The script _EDRN_Preprocessing.R_ allows to load and preprocess the metabolomics
 
 Both script will generate an html report illustrating all the analysis steps and results.
 
-The necessary data will be automatically downloaded from the Figshare repository [link] using the function contained in _HelperFunction.R_.
+The necessary data will be automatically downloaded from Figshare using the function contained in _HelperFunction.R_.
