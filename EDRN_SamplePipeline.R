@@ -20,36 +20,37 @@ alpha <- 0.05
 
 #### Download Data Files ----
 
-# download metabolomics data from figshare
-# data files will be saved in the working directory
-# If file already exists in working directory, will use local copy.
-file_data <- "EDRN_MetabolomicsData.xlsx"
-load.web.file(
-  url="https://figshare.com/ndownloader/files/38682632?private_link=90221d74cdf8ebad84c5",
-  md5sum = "4a5b92b24615a6a0499804b4842600b9",
-  outfile = file_data
-)
-
-# download clinical data from figshare
-# data files will be saved in the working directory
-# If file already exists in working directory, will use local copy.
+file_data <- "EDRN_MetabolomicsData_2023_08_27.xlsx"
 file_clin <- "EDRN_ClinicalData.xlsx"
-load.web.file(
-  url="https://figshare.com/ndownloader/files/38677247?private_link=90221d74cdf8ebad84c5",
-  md5sum = "47c9db61e17f8ddd5ce3ef28d7f2f68c",
-  outfile = file_clin
-)
+
+# # download metabolomics data from figshare
+# # data files will be saved in the working directory
+# # If file already exists in working directory, will use local copy.
+# load.web.file(
+#   url="https://figshare.com/ndownloader/files/38682632?private_link=90221d74cdf8ebad84c5",
+#   md5sum = "4a5b92b24615a6a0499804b4842600b9",
+#   outfile = file_data
+# )
+# 
+# # download clinical data from figshare
+# # data files will be saved in the working directory
+# # If file already exists in working directory, will use local copy.
+# load.web.file(
+#   url="https://figshare.com/ndownloader/files/38677247?private_link=90221d74cdf8ebad84c5",
+#   md5sum = "47c9db61e17f8ddd5ce3ef28d7f2f68c",
+#   outfile = file_clin
+# )
 
 
 #### Lod Data ----
 
 D <- 
   # load preprocessed metabolomics data
-  mt_load_xls(file=file_data, sheet="PreprocessedData", samples_in_row=T, id_col="SAMPLE_ID") %>% 
-  mt_anno_xls(file=file_data, sheet="SampleAnnotations", anno_type="samples", anno_id_col ="SAMPLE_ID", data_id_col = "SAMPLE_ID") %>% 
-  mt_anno_xls(file=file_data, sheet="MetaboliteAnnotations", anno_type="features", anno_id_col="BIOCHEMICAL", data_id_col = "name") %>%
+  mt_load_xls(file=file_data, sheet="PreprocessedData", samples_in_row=T, id_col="CLIENT_SAMPLE_ID") %>% 
+  mt_anno_xls(file=file_data, sheet="SampleAnnotations", anno_type="samples", anno_id_col ="CLIENT_SAMPLE_ID", data_id_col = "CLIENT_SAMPLE_ID") %>% 
+  mt_anno_xls(file=file_data, sheet="MetaboliteAnnotations", anno_type="features", anno_id_col="CHEMICAL_NAME", data_id_col = "name") %>%
   # load clinical data
-  mt_anno_xls(file=file_clin, sheet="ClinicalAnnotations", anno_type="samples", anno_id_col = "SAMPLE_ID", data_id_col = "SAMPLE_ID") %>%
+  mt_anno_xls(file=file_clin, sheet="ClinicalAnnotations", anno_type="samples", anno_id_col = "SAMPLE_ID", data_id_col = "CLIENT_SAMPLE_ID") %>%
   # set variable to factor
   mt_anno_apply(anno_type = "samples", col_name = "Diagnosis", fun = as.factor)
 
